@@ -2,7 +2,7 @@ import retro
 
 
 def main():
-    env = retro.make(game='SonicTheHedgehog3-Genesis')
+    env = retro.make(game='SonicAndKnuckles3-Genesis')
     obs = env.reset()
     while True:
         obs, rew, done, info = env.step(env.action_space.sample())
