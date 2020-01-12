@@ -1,5 +1,6 @@
 import sys
-# sys.path.append("C:/Users/Oliver/Anaconda3/envs/gym/Lib/site-packages")
+#sys.path.append("C:/Users/Oliver/Anaconda3/envs/gym/Lib/site-packages")
+sys.path.append("O:\Oliver\Anaconda\envs\gym\Lib\site-packages")
 import numpy as np
 import gym
 import retro
@@ -31,18 +32,51 @@ def main():
     memory = SequentialMemory(limit=50000, window_length=1)
     policy = BoltzmannQPolicy()
 
-    dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=10,
-                   target_model_update=1e-2, policy=policy)
+    # Uncomment the following line to load the model weights from file
+    model.load_weights('dqn_{}_weights.h5f'.format(ENV_NAME))
+    dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=1000,
+                   target_model_update=1e-3, policy=policy)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+    training_history = dqn.fit(env, nb_steps=1000000, visualize=True, verbose=2, action_repetition=4)
+    plot_training_results(training_history)
 
-    training_history = dqn.fit(env, nb_steps=50000, visualize=True, verbose=2)
-    e = training_history.history['episode_reward']
-    plt.plot(episode_reward)
+    # Uncomment the following line to overwrite the model weights file after training
+    dqn.save_weights('dqn_{}_weights.h5f'.format(ENV_NAME), overwrite=True)
+    dqn.test(env, nb_episodes=5, visualize=True)
+
+
+def plot_training_results(training_history):
+    session_reward = np.array(training_history.history['episode_reward'])
+    session_episodes = np.arange(session_reward.size)
+
+    overall_reward = np.load('reward_history.npy')
+    overall_reward = np.concatenate((overall_reward, session_reward))
+    np.save('reward_history.npy', session_reward)  # save
+
+    session_regression_line = calculate_regression_line(session_episodes, session_reward)
+
+    plt.scatter(session_episodes, session_reward)
+    plt.plot(session_episodes, session_regression_line)
+    plt.title('training session results')
     plt.ylabel('episode reward')
     plt.show()
-    dqn.save_weights('dqn_{}_weights.h5f'.format(ENV_NAME), overwrite=True)
 
-    dqn.test(env, nb_episodes=5, visualize=True)
+    overall_episodes = np.arange(overall_reward.size)
+    overall_regression_line = calculate_regression_line(overall_episodes, overall_reward)
+
+    plt.scatter(overall_episodes, overall_reward)
+    plt.plot(overall_episodes, overall_regression_line)
+    plt.title('overall training results')
+    plt.ylabel('episode reward')
+    plt.show()
+
+
+def calculate_regression_line(episodes, rewards):
+    slope = (((np.mean(episodes) * np.mean(rewards)) - np.mean(episodes * rewards)) /
+         ((np.mean(episodes) * np.mean(episodes)) - np.mean(episodes * episodes)))
+    intercept = np.mean(rewards) - slope * np.mean(episodes)
+    regression_line = (slope * episodes) + intercept
+    return regression_line
 
 
 if __name__ == "__main__":
