@@ -13,7 +13,7 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 
-ENV_NAME = 'StreetFighterIISpecialChampionEdition-Genesis'
+ENV_NAME = 'SonicTheHedgehog-Genesis'
 
 def main():
     env = retro.make(game=ENV_NAME, use_restricted_actions=retro.Actions.DISCRETE)
@@ -33,7 +33,9 @@ def main():
     policy = BoltzmannQPolicy()
 
     # Uncomment the following line to load the model weights from file
-    model.load_weights('dqn_{}_weights.h5f'.format(ENV_NAME))
+    # NOTE: on the first run you must comment the line below (38) since there wont be
+    # any weights to load and you will get an error
+    # model.load_weights('dqn_{}_weights.h5f'.format(STATE_NAME))
     dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=1000,
                    target_model_update=1e-3, policy=policy)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
