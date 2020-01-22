@@ -1,5 +1,5 @@
 from retro import make
-
+import retro
 
 def main():
     env = make(game='SonicTheHedgehog-Genesis', state='LabyrinthZone.Act1')
