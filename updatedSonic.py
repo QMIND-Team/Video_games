@@ -13,7 +13,7 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 
-ENV_NAME = 'StreetFighterIISpecialChampionEdition-Genesis'
+ENV_NAME = 'SonicTheHedgehog-Genesis'
 
 def main():
     env = retro.make(game=ENV_NAME, use_restricted_actions=retro.Actions.DISCRETE)
@@ -33,16 +33,23 @@ def main():
     policy = BoltzmannQPolicy()
 
     # Uncomment the following line to load the model weights from file
+    # NOTE: on the first run you must comment the line below (38) since there wont be
+    # any weights to load and you will get an error
     model.load_weights('dqn_{}_weights.h5f'.format(ENV_NAME))
-    dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=1000,
+    dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=100,
                    target_model_update=1e-3, policy=policy)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
-    training_history = dqn.fit(env, nb_steps=1000000, visualize=True, verbose=2, action_repetition=4)
-    plot_training_results(training_history)
+    training_history = dqn.fit(env, nb_steps=2000, visualize=True, verbose=2, action_repetition=4)
+    # Threw an error, I don't think we need to graph things...
+    # plot_training_results(training_history)
 
     # Uncomment the following line to overwrite the model weights file after training
     # dqn.save_weights('dqn_{}_weights.h5f'.format(ENV_NAME), overwrite=True)
+<<<<<<< HEAD:streetfighter.py
     dqn.test(env, nb_episodes=5, visualize=True)
+=======
+    dqn.test(env, nb_episodes=2, visualize=True)
+>>>>>>> ted:updatedSonic.py
 
 
 def plot_training_results(training_history):
