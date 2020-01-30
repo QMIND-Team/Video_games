@@ -5,8 +5,8 @@ import argparse
 import retro
 #import h5py
 from CNNProcessor import CNNProcessor
-from InfoCallbackTrain import InfoCallbackTrain
-from InfoCallbackTest import InfoCallbackTest
+# from InfoCallbackTrain import InfoCallbackTrain
+# from InfoCallbackTest import InfoCallbackTest
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten, Conv2D, MaxPooling2D, Dropout
 from keras.optimizers import Adam
@@ -16,7 +16,7 @@ from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 from trainingMetrics import plot_reward, plot_wins, STATE_NAME
 
-ENV_NAME = 'StreetFighterIISpecialChampionEdition-Genesis'
+ENV_NAME = 'SonicTheHedgehog-Genesis'
 
 def main(mode):
     env = retro.make(game=ENV_NAME, state=STATE_NAME, use_restricted_actions=retro.Actions.DISCRETE)
@@ -77,7 +77,7 @@ def main(mode):
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
     if mode == "train":
-        dqn.fit(env, nb_steps = 1000000, visualize=True, verbose=2, callbacks=[InfoCallbackTrain()], action_repetition=4)
+        dqn.fit(env, nb_steps = 1000000, visualize=True, verbose=2, action_repetition=4)
         dqn.save_weights(WEIGHT_PATH, overwrite=True)
 
     if mode == "test":

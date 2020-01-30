@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os.path
 
-STATE_NAME = 'Champion.Level1.RyuVsGuile.state'
+STATE_NAME = 'GreenHillZone.Act1.state'
 # STATE_NAME = 'ryu4.state'
 # STATE_NAME = 'ryu8.state'
 
