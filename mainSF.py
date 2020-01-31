@@ -81,7 +81,7 @@ def main(mode):
         dqn.save_weights(WEIGHT_PATH, overwrite=True)
 
     if mode == "test":
-        dqn.test(env, nb_episodes=3, visualize=True, callbacks=[InfoCallbackTest()])
+        dqn.test(env, nb_episodes=3, visualize=True) #removed -> callbacks=[InfoCallbackTest()]
 
     plot_wins(mode)
     #plot_reward(training_history)
