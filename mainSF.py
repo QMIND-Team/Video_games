@@ -16,7 +16,8 @@ from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 from trainingMetrics import plot_reward, plot_wins
 
-ENV_NAME = 'StreetFighterIISpecialChampionEdition-Genesis'
+# ENV_NAME = 'StreetFighterIISpecialChampionEdition-Genesis'
+ENV_NAME = 'SonicTheHedgehog-Genesis'
 
 def buildModel(weight_path, num_actions):
     model = Sequential()
@@ -72,7 +73,9 @@ def main(mode):
 
     if mode == "train":
         
-        state = "ryu8guile.state"
+        state = "GreenHillZone.Act1.state"
+        # state = "ryu8guile.state"
+
         print("\nState: ", state)
 
         env = retro.make(game=ENV_NAME, state=state, use_restricted_actions=retro.Actions.DISCRETE)
@@ -87,9 +90,11 @@ def main(mode):
             (model, memory, policy) = buildModel(None, num_actions)
            
         dqn = buildDQNAgent(model, memory, policy, num_actions)
-        dqn.fit(env, nb_steps=1000000, visualize=False, verbose=2, callbacks=[InfoCallbackTrain(state)], action_repetition=4)
+        dqn.fit(env, nb_steps=1000000, visualize=True, verbose=2, action_repetition=4)
+        # callbacks=[InfoCallbackTrain(state)],
+        # removed callbacks
         dqn.save_weights(WEIGHT_PATH, overwrite=True)
-        plot_wins(mode, state)
+        # plot_wins(mode, state)
 
     elif mode == "test":
         
