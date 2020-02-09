@@ -18,44 +18,22 @@ scenario file located at: site-packages/retro/data/stable/stable/StreetFighterII
     
 Note that in the infocallbacktrain and infocallback test files the value that measures a win will be 2 for Ted and 8 for everyone else. If this value is not adjusted wins will be measured incorrectly. 
 
-To properly enable testing, paste the following snippet into: Lib\site-packages\rl\policy.py
+Training naming convention:
+Date Month DD
+Agent character
+EnemyChar
+Difficulties trained on 
 
-class BoltzmannQPolicyTest(Policy):
-    """Implement the Boltzmann Q Policy
+E.g
+January 27
+Ryu
+Guile
+Difficulty 4, 5, and 6
 
-    Boltzmann Q Policy builds a probability law on q values and returns
-    an action selected randomly according to this law.
-    """
-    def __init__(self, tau=1, clip=(-500., 500.)):
-        super(BoltzmannQPolicyTest, self).__init__()
-        self.tau = tau
-        self.clip = clip
+Jan27-ryu-guile-456
 
-    def select_action(self, q_values):
-        """Return the selected action
-
-        # Arguments
-            q_values (np.ndarray): List of the estimations of Q for each action
-
-        # Returns
-            Selection action
-        """
-        assert q_values.ndim == 1
-        q_values = q_values.astype('float64')
-        nb_actions = q_values.shape[0]
-
-        exp_values = np.exp(np.clip(q_values / self.tau, self.clip[0], self.clip[1]))
-        probs = exp_values / np.sum(exp_values)
-        action = np.random.choice(range(nb_actions), p=probs)
-        return action
-
-    def get_config(self):
-        """Return configurations of EpsGreedyPolicy
-
-        # Returns
-            Dict of config
-        """
-        config = super(BoltzmannQPolicyTest, self).get_config()
-        config['tau'] = self.tau
-        config['clip'] = self.clip
-        return config
+Specifying number of episodes to train for:
+- To do so the KerasRL core must be customized.
+- Navigate to site-packages/rl/core.py
+- On line 55, add the following parameter to the fit() signature: nb_episodes=None
+- On line 124, change the while loop condition to: while self.step < nb_steps and episode < nb_episodes:

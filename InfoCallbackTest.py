@@ -3,8 +3,9 @@ from trainingMetrics import save_wins
 
 
 class InfoCallbackTest(tf.keras.callbacks.Callback):
-    def __init__(self):
+    def __init__(self, state):
         self.player_win = False
+        self.state = state
 
     def on_step_end(self, step, logs=None):
 
@@ -13,11 +14,11 @@ class InfoCallbackTest(tf.keras.callbacks.Callback):
 
     def on_episode_end(self, episode, logs=None):
         
-        print("Episode {} Win {}".format(episode, self.player_win))
-
+        print("Test Episode {} Win: {}".format(episode + 1, self.player_win))
+        
         if self.player_win == False:
-            save_wins(False, "test")
+            save_wins(False, "test", self.state)
         elif self.player_win == True:
-            save_wins(True, "test")
+            save_wins(True, "test", self.state)
             self.player_win = False
         

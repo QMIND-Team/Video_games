@@ -2,11 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os.path
 
-STATE_NAME = 'GreenHillZone.Act1.state'
-# STATE_NAME = 'ryu4.state'
-# STATE_NAME = 'ryu8.state'
-
-
+#STATE_NAME = 'Champion.Level1.RyuVsGuile.state'
+#STATE_NAME = 'ryu4.state'
+#STATE_NAME = 'ryu8guile.state'
 
 def calculate_regression_line(episodes, rewards):
     slope = (((np.mean(episodes) * np.mean(rewards)) - np.mean(episodes * rewards)) /
@@ -41,9 +39,9 @@ def plot_reward(training_history):
     plt.show()
 
 
-def plot_wins(mode):
-    if os.path.exists('win-history/{}_win_history_{}.npy'.format(STATE_NAME, mode)):
-        win_history = np.load('win-history/{}_win_history_{}.npy'.format(STATE_NAME, mode))
+def plot_wins(mode, state):
+    if os.path.exists('win-history/{}_win_history_{}.npy'.format(state, mode)):
+        win_history = np.load('win-history/{}_win_history_{}.npy'.format(state, mode))
         matches = np.arange(win_history.size)
         regression_line = calculate_regression_line(matches, win_history)
 
@@ -51,17 +49,17 @@ def plot_wins(mode):
         plt.plot(matches, regression_line)
         plt.yticks([1.0, 0.0], ["True",
                                 "False"])
-        plt.title('match results: {}'.format(STATE_NAME))
+        plt.title('match results: {}'.format(state))
         plt.ylabel('win')
         plt.xlabel('match number')
         plt.text(0, 0.5, "Win percentile: {}%".format(100*sum(win_history)/win_history.size))
         plt.show()
 
 
-def save_wins(player_win, mode):
-    if os.path.exists('win-history/{}_win_history_{}.npy'.format(STATE_NAME, mode)):
-        win_history = np.load('win-history/{}_win_history_{}.npy'.format(STATE_NAME, mode))
+def save_wins(player_win, mode, state):
+    if os.path.exists('win-history/{}_win_history_{}.npy'.format(state, mode)):
+        win_history = np.load('win-history/{}_win_history_{}.npy'.format(state, mode))
         win_history = np.concatenate((win_history, [player_win]))
     else:
         win_history = [player_win]
-    np.save('win-history/{}_win_history_{}.npy'.format(STATE_NAME, mode), win_history)
+    np.save('win-history/{}_win_history_{}.npy'.format(state, mode), win_history)
