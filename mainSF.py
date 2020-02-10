@@ -11,6 +11,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten, Conv2D, MaxPooling2D, Dropout
 from keras.optimizers import Adam
 import os.path
+from keras.callbacks import ModelCheckpoint
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
@@ -65,7 +66,7 @@ def buildModel(weight_path, num_actions):
 
 def buildDQNAgent(model, memory, policy, num_actions):
     dqn = DQNAgent(processor=CNNProcessor(), model=model, nb_actions=num_actions, memory=memory, 
-                    nb_steps_warmup=10000, target_model_update=1e-3, policy=policy, test_policy=policy)
+                    nb_steps_warmup=1000, target_model_update=1e-3, policy=policy, test_policy=policy)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
     return dqn
 
@@ -90,15 +91,21 @@ def main(mode):
             (model, memory, policy) = buildModel(None, num_actions)
            
         dqn = buildDQNAgent(model, memory, policy, num_actions)
-        dqn.fit(env, nb_steps=1000000, visualize=True, verbose=2, action_repetition=4)
+
+        # save weights callback for Sonic
+        checkpointer = ModelCheckpoint(filepath=WEIGHT_PATH, verbose=0, save_weights_only=True)
+        dqn.fit(env, nb_steps=1000000, visualize=True, verbose=2, action_repetition=4, callbacks=[checkpointer])
+
         # callbacks=[InfoCallbackTrain(state)],
         # removed callbacks
+        
         dqn.save_weights(WEIGHT_PATH, overwrite=True)
         # plot_wins(mode, state)
 
     elif mode == "test":
         
-        state = "ryu8guile.state"
+        state = "GreenHillZone.Act1.state"
+        # state = "ryu8guile.state"
         print("\nState: ", state)
 
         env = retro.make(game=ENV_NAME, state=state, use_restricted_actions=retro.Actions.DISCRETE)
@@ -113,8 +120,9 @@ def main(mode):
             (model, memory, policy) = buildModel(None, num_actions)
            
         dqn = buildDQNAgent(model, memory, policy, num_actions)
-        dqn.test(env, nb_episodes=100, visualize=True, callbacks=[InfoCallbackTest(state)])
-        plot_wins(mode, state)
+        dqn.test(env, nb_episodes=10, visualize=True) # , callbacks=[InfoCallbackTest(state)]
+        # removed callbacks
+        # plot_wins(mode, state)
 
     elif mode == "testscript":
         weightTest()
