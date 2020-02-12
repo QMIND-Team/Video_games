@@ -13,7 +13,7 @@ from keras.optimizers import Adam
 import os.path
 from keras.callbacks import ModelCheckpoint
 from rl.agents.dqn import DQNAgent
-from rl.policy import BoltzmannQPolicy
+from rl.policy import BoltzmannQPolicy, MaxBoltzmannQPolicy
 from rl.memory import SequentialMemory
 from trainingMetrics import plot_reward, plot_wins
 
@@ -58,6 +58,7 @@ def buildModel(weight_path, num_actions):
     # number of steps? and policy used for learning
     memory = SequentialMemory(limit=50000, window_length=1)
     policy = BoltzmannQPolicy()
+    # policy = MaxBotlzmannQPolicy()
 
     if weight_path != None:
         model.load_weights(weight_path)
@@ -66,7 +67,7 @@ def buildModel(weight_path, num_actions):
 
 def buildDQNAgent(model, memory, policy, num_actions):
     dqn = DQNAgent(processor=CNNProcessor(), model=model, nb_actions=num_actions, memory=memory, 
-                    nb_steps_warmup=1000, target_model_update=1e-3, policy=policy, test_policy=policy)
+                    nb_steps_warmup=500, target_model_update=1e-3, policy=policy, test_policy=policy)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
     return dqn
 
@@ -94,7 +95,8 @@ def main(mode):
 
         # save weights callback for Sonic
         checkpointer = ModelCheckpoint(filepath=WEIGHT_PATH, verbose=0, save_weights_only=True)
-        dqn.fit(env, nb_steps=1000000, visualize=True, verbose=2, action_repetition=4, callbacks=[checkpointer])
+        dqn.fit(env, nb_steps=1000000, visualize=True, verbose=2, action_repetition=8,
+                    callbacks=[checkpointer], nb_max_episode_steps=4000)
 
         # callbacks=[InfoCallbackTrain(state)],
         # removed callbacks
