@@ -76,7 +76,7 @@ def main(mode):
                
         print("\nState: ", state)
 
-        env = retro.make(game=ENV_NAME, state=state, use_restricted_actions=retro.Actions.DISCRETE)
+        env = retro.make(game=ENV_NAME, state=state, use_restricted_actions=retro.Actions.DISCRETE, scenario='custom_senario')
         num_actions = env.action_space.n
         WEIGHT_PATH = 'weights/dqn_cnn_{}_weights.h5f'.format(state)
 
