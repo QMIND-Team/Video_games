@@ -1,6 +1,5 @@
 import sys
-#sys.path.append("O:\Oliver\Anaconda\envs\gym\Lib\site-packages")
-sys.path.append("C:/Users/Oliver/Anaconda3/envs/gym/Lib/site-packages")
+# sys.path.append("C:/Users/Oliver/Anaconda3/envs/gym/Lib/site-packages")
 import argparse
 import retro
 #import h5py
@@ -15,9 +14,7 @@ from keras.callbacks import ModelCheckpoint
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy, MaxBoltzmannQPolicy
 from rl.memory import SequentialMemory
-from trainingMetrics import plot_reward, plot_wins
 
-# ENV_NAME = 'StreetFighterIISpecialChampionEdition-Genesis'
 ENV_NAME = 'SonicTheHedgehog-Genesis'
 
 def buildModel(weight_path, num_actions):
@@ -76,8 +73,8 @@ def main(mode):
     if mode == "train":
         
         state = "GreenHillZone.Act1.state"
-        # state = "ryu8guile.state"
-
+                  
+               
         print("\nState: ", state)
 
         env = retro.make(game=ENV_NAME, state=state, use_restricted_actions=retro.Actions.DISCRETE)
@@ -98,7 +95,7 @@ def main(mode):
         dqn.fit(env, nb_steps=1000000, visualize=True, verbose=2, action_repetition=8,
                     callbacks=[checkpointer], nb_max_episode_steps=4000)
 
-        # callbacks=[InfoCallbackTrain(state)],
+        callbacks=[InfoCallbackTrain(state)]
         # removed callbacks
         
         dqn.save_weights(WEIGHT_PATH, overwrite=True)
@@ -126,46 +123,9 @@ def main(mode):
         # removed callbacks
         # plot_wins(mode, state)
 
-    elif mode == "testscript":
-        weightTest()
-    elif mode == "plot":
-        plot_wins("test", "ryu1guile.state")
-        plot_wins("test", "ryu2guile.state")
-        plot_wins("test", "ryu3guile.state")
-        plot_wins("test", "ryu4guile.state")
-        plot_wins("test", "ryu5guile.state")
     else:
         print("No mode specified")
     
-    
-def weightTest():
-
-    weight_paths = [
-        None,
-        'weights/dqn_cnn_ryu1.state_weights.h5f',
-        'weights/dqn_cnn_ryu5.state_weights.h5f'
-    ]
-
-    state_paths = [
-        'ryu1guile.state',
-        'ryu2guile.state',
-        'ryu3guile.state',
-        'ryu4guile.state',
-        'ryu5guile.state'
-    ]
-
-    for weight_path in weight_paths:
-        print("\nWEIGHTS: ", weight_path)
-        (model, memory, policy) = buildModel(weight_path, 126)
-
-        for state_path in state_paths:
-            print("STATE: ", state_path)
-            env = retro.make(game=ENV_NAME, state=state_path, use_restricted_actions=retro.Actions.DISCRETE)
-            dqn = buildAgent(model, memory, policy, 126)
-            testModel(env, dqn, 10, state_path)
-            env.close()
-
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
