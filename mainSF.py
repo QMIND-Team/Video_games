@@ -4,8 +4,6 @@ import argparse
 import retro
 #import h5py
 from CNNProcessor import CNNProcessor
-from InfoCallbackTrain import InfoCallbackTrain
-from InfoCallbackTest import InfoCallbackTest
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten, Conv2D, MaxPooling2D, Dropout
 from keras.optimizers import Adam
@@ -93,9 +91,9 @@ def main(mode):
         # save weights callback for Sonic
         checkpointer = ModelCheckpoint(filepath=WEIGHT_PATH, verbose=0, save_weights_only=True)
         dqn.fit(env, nb_steps=1000000, visualize=True, verbose=2, action_repetition=8,
-                    callbacks=[checkpointer], nb_max_episode_steps=4000)
+                    callbacks=[checkpointer], nb_max_episode_steps=500)
 
-        callbacks=[InfoCallbackTrain(state)]
+        # callbacks=[InfoCallbackTrain(state)]
         # removed callbacks
         
         dqn.save_weights(WEIGHT_PATH, overwrite=True)
