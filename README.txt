@@ -3,6 +3,7 @@ This is our repository for building an agent using Deep Q-Learning to play Stree
 Library requirements can be installed from the requirements.txt file
 
 To run the agent, a mode argument must be specified, either --mode train, or --mode test
+TO TRAIN: python mainSF.py --mode train
 
 To update the customized reward function, the scenario.json file in the retro library files must be changed. 
 Make sure to copy the two files in the jsons folder into the "sonicthehedgehog-genisis" folder on your machine. 
