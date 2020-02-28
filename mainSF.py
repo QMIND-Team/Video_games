@@ -92,7 +92,7 @@ def main(mode):
         # save weights callback for Sonic
         checkpointer = ModelCheckpoint(filepath=WEIGHT_PATH, verbose=0, save_weights_only=True)
         dqn.fit(env, nb_steps=1000000, visualize=True, verbose=2, action_repetition=8,
-                    callbacks=[InfoCallbackTrain(state)], nb_max_episode_steps=200)
+                    callbacks=[InfoCallbackTrain(state), checkpointer], nb_max_episode_steps=200)
 
         # callbacks=[InfoCallbackTrain(state)]
         # removed callbacks

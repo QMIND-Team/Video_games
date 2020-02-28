@@ -13,6 +13,7 @@ class InfoCallbackTrain(tf.keras.callbacks.Callback):
         x = (logs['info'])['x']
         # print('x')
         # print(x)
+        
         if (logs['info'])['screen_x'] == (logs['info'])['screen_x_end']:
             self.player_win = True
 
