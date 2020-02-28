@@ -1,18 +1,21 @@
 import tensorflow as tf
 from trainingMetrics import save_wins
 
-
 class InfoCallbackTrain(tf.keras.callbacks.Callback):
+    count = 1
     def __init__(self, state):
         self.player_win = False
         self.state = state
-
+        
+    
     def on_step_end(self, step, logs=None):
+        #for printing elements used in reward function
         x = (logs['info'])['x']
-        print('x')
-        print(x)
-        # if (logs['info'])['matches_won'] == 8:
-        #     self.player_win = True
+        # print('x')
+        # print(x)
+        
+        if (logs['info'])['screen_x'] == (logs['info'])['screen_x_end']:
+            self.player_win = True
 
     def on_episode_end(self, episode, logs=None):
         

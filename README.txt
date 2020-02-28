@@ -8,4 +8,5 @@ To update the customized reward function, the scenario.json file in the retro li
 Make sure to copy the two files in the jsons folder into the "sonicthehedgehog-genisis" folder on your machine. 
 These two files have the information for the custom reward function. 
 
-
+Make sure you have ALL of the file in the jsons folder in the "sonicthehedgehog-genisis" folder. 
+Just copy them and overwrite what you have.
