@@ -117,6 +117,7 @@ def main(mode):
             print("No weights found for current state.\n")
             (model, memory, policy) = buildModel(None, num_actions)
            
+
         dqn = buildDQNAgent(model, memory, policy, num_actions)
         dqn.test(env, nb_episodes=10, visualize=True) # , callbacks=[InfoCallbackTest(state)]
         # removed callbacks

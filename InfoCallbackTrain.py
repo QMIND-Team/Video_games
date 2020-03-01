@@ -1,5 +1,7 @@
 import tensorflow as tf
 from trainingMetrics import save_wins
+import csv
+import numpy as np
 
 class InfoCallbackTrain(tf.keras.callbacks.Callback):
     count = 1
@@ -18,6 +20,13 @@ class InfoCallbackTrain(tf.keras.callbacks.Callback):
             self.player_win = True
 
     def on_episode_end(self, episode, logs=None):
+
+        score = [logs['episode_reward']]
+        print(score)
+        with open("training_history.csv", "a", newline='\n') as f:
+            csv.writer(f).writerow(score)
+            print("Saved score to training_history.csv")
+        
         
         print("Train Episode {} Win: {}".format(episode + 1, self.player_win))
 
