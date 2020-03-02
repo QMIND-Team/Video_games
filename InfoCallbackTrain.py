@@ -21,6 +21,8 @@ class InfoCallbackTrain(tf.keras.callbacks.Callback):
 
     def on_episode_end(self, episode, logs=None):
 
+        # Saves each episode reward to training_history
+        # Automatically appends, delete 'training_history' to start fresh history
         score = [logs['episode_reward']]
         print(score)
         with open("training_history.csv", "a", newline='\n') as f:
