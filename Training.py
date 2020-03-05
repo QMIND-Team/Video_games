@@ -3,13 +3,15 @@ import numpy as np
 import cv2
 import neat
 import pickle
+import time
 
 env = retro.make(game="SonicTheHedgehog-Genesis", state="GreenHillZone.Act1", scenario='custom_senario')
 imgarray = []
 xpos_end = 0
 
 resume = True
-restore_file = "neat-checkpoint-204"
+restore_file = "neat-checkpoint-265"
+start_time = time.time()
 
 
 def eval_genomes(genomes, config):
@@ -34,6 +36,8 @@ def eval_genomes(genomes, config):
         live=3
         while not done:
 
+
+
             env.render()
             frame += 1
             ob = cv2.resize(ob, (inx, iny))
@@ -46,19 +50,21 @@ def eval_genomes(genomes, config):
 
             ob, rew, done, info = env.step(nnOutput)
             xpos = info['x']
+            rings = info['rings']
+            seconds = (time.time() - start_time)
 
-            #here
-            #if info['lives']<live:
-                #fitness_current *= 0.8
-            #live=info['lives']
+           
 
-            fitness_current = xpos
-            #print(xpos)
-
+            # Sets the model fitness to the x-position plus rings, penalized for time
+            # Change coefficients next to rings and seconds to change weightings
+           
+            fitness_current = (xpos + rings*100 - seconds*5)
+           
             if xpos >= 65664:
                 fitness_current += 10000000
                 done = True
 
+            # Counter function to time out when progress is not made
             if fitness_current > current_max_fitness:
                 current_max_fitness = fitness_current
                 counter = 0
