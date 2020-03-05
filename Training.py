@@ -9,7 +9,7 @@ imgarray = []
 xpos_end = 0
 
 resume = True
-restore_file = "neat-checkpoint-76"
+restore_file = "neat-checkpoint-204"
 
 
 def eval_genomes(genomes, config):
@@ -51,19 +51,21 @@ def eval_genomes(genomes, config):
             #if info['lives']<live:
                 #fitness_current *= 0.8
             #live=info['lives']
+
+            fitness_current = xpos
+            #print(xpos)
+
             if xpos >= 65664:
                 fitness_current += 10000000
                 done = True
-
-            fitness_current += rew
 
             if fitness_current > current_max_fitness:
                 current_max_fitness = fitness_current
                 counter = 0
             else:
-                counter += 5
+                counter += 1
 
-            if done or counter == 250:#
+            if done or counter == 300:#
                 done = True
                 print(genome_id, fitness_current)
 
