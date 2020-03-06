@@ -11,7 +11,7 @@ xpos_end = 0
 
 resume = True
 restore_file = "neat-checkpoint-265"
-start_time = time.time()
+
 
 
 def eval_genomes(genomes, config):
@@ -31,6 +31,8 @@ def eval_genomes(genomes, config):
         frame = 0
         counter = 0
         xpos = 0
+
+        start_time = time.time()
 
         done = False
         live=3
@@ -74,6 +76,8 @@ def eval_genomes(genomes, config):
             if done or counter == 300:#
                 done = True
                 print(genome_id, fitness_current)
+                print("Time: ", seconds)
+                start_time = time.time()
 
             genome.fitness = fitness_current
 
